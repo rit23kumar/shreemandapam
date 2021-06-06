@@ -90,7 +90,7 @@ jQuery(document).ready(function($) {
       }
     });
     if (ferror) return false;
-    else var str = $(this).serialize();
+    else var str = JSON.stringify({ name: this[0].value, email: this[1].value, mobile: this[2].value, message: this[3].value, source: this[4].value });
 
     var this_form = $(this);
     var action = $(this).attr('action');
@@ -105,18 +105,19 @@ jQuery(document).ready(function($) {
     this_form.find('.error-message').slideUp();
     this_form.find('.loading').slideDown();
     
-    $.ajax({
-      type: "POST",
-      url: action,
-      data: str,
+      $.ajax({
+          type: "POST",
+          url: action,
+          data: str,
+      contentType: "application/json; charset=utf-8",
       success: function(msg) {
-        if (msg == 'OK') {
+        if (msg.d == 'OK') {
           this_form.find('.loading').slideUp();
           this_form.find('.sent-message').slideDown();
           this_form.find("input:not(input[type=submit]), textarea").val('');
         } else {
           this_form.find('.loading').slideUp();
-          this_form.find('.error-message').slideDown().html(msg);
+            this_form.find('.error-message').slideDown().html("Failed to send the message. Please contact using other medium.");
         }
       }
     });
